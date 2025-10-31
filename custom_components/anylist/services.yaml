@@ -25,6 +25,10 @@ remove_item:
       example: Milk
       selector:
         text:
+    ignore_case:
+      description: Ignore the case of the item name when searching
+      selector:
+        boolean:
     list:
       description: Name of the list
       example: Shopping

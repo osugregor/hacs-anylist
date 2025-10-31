@@ -30,7 +30,8 @@ from .const import (
     ATTR_NAME,
     ATTR_LIST,
     ATTR_CHECKED,
-    ATTR_NOTES
+    ATTR_NOTES,
+    ATTR_IGNORE_CASE
 )
 
 PLATFORMS: list[Platform] = [Platform.TODO]
@@ -50,7 +51,8 @@ SERVICE_ITEM_SCHEMA = vol.Schema(
     {
         vol.Required(ATTR_NAME): cv.string,
         vol.Optional(ATTR_NOTES, default = ""): cv.string,
-        vol.Optional(ATTR_LIST, default = ""): cv.string
+        vol.Optional(ATTR_LIST, default = ""): cv.string,
+        vol.Optional(ATTR_IGNORE_CASE, default = False): cv.boolean
     }
 )
 
@@ -105,8 +107,9 @@ async def async_setup_entry(hass, config_entry):
 
     async def remove_item_service(call):
         item_name = call.data[ATTR_NAME]
+        ignore_case = call.data.get(ATTR_IGNORE_CASE)
         list_name = call.data.get(ATTR_LIST)
-        code = await anylist.remove_item_by_name(item_name, list_name)
+        code = await anylist.remove_item_by_name(item_name, ignore_case = ignore_case, list_name = list_name)
         return {"code": code}
 
     async def check_item_service(call):
@@ -211,9 +214,25 @@ class Anylist:
                     _LOGGER.error("Failed to add item. Received error code %d.", code)
                 return code
 
-    async def remove_item_by_name(self, item_name, list_name = None):
+    async def remove_item_by_name(self, item_name, ignore_case = False, list_name = None):
+        if ignore_case:
+            code, items = await self.get_detailed_items(list_name)
+            if code != 200:
+                _LOGGER.error("Failed to remove item. Received error code %d.", code)
+                return code
+
+            item_name = item_name.strip().lower()
+            matches = list(filter(lambda item: item[ATTR_NAME].lower() == item_name, items))
+            if not matches:
+                _LOGGER.error("Failed to remove item. Received error code %d.", 304)
+                return 304
+
+            matched_item = matches[0][ATTR_NAME]
+        else:
+            matched_item = item_name.strip()
+
         body = {
-            ATTR_NAME: item_name.strip(),
+            ATTR_NAME: matched_item,
             ATTR_LIST: self.get_list_name(list_name)
         }
 
