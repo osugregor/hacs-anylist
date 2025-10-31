@@ -48,16 +48,18 @@ data:
 
 #### anylist.remove_item
 Parameters:
-| Parameter | Required | Description          |
-| --------- | -------- | -------------------- |
-| name      | Yes      | The name of the item |
-| list      | No       | The name of the list |
+| Parameter   | Required | Description                                     |
+| ----------- | -------- | ----------------------------------------------- |
+| name        | Yes      | The name of the item                            |
+| ignore_case | No       | Ignore the case of the item name when searching |
+| list        | No       | The name of the list                            |
 
 Example service call:
 ```
 service: anylist.remove_item
 data:
   name: milk
+  ignore_case: True
   list: Shopping
 ```
 
@@ -153,7 +155,7 @@ The integration supports the to-do lists feature introduced in [Home Assistant 2
 ### Home Assistant Intents
 
 #### Assist
-If you wish to use this integration with [Home Assistant Assist](https://www.home-assistant.io/voice_control/), Home Assistant 2023.12.0 added support for adding items to to-do lists using intents. For more details, see [built-in intents](https://developers.home-assistant.io/docs/intent_builtin/) and [the intents repository](https://github.com/home-assistant/intents).
+If you wish to use this integration with [Home Assistant Assist](https://www.home-assistant.io/voice_control/), Home Assistant 2023.12.0 added support for adding items to to-do lists using intents. For more details, see [built-in intents](https://developers.home-assistant.io/docs/intent_builtin/) and [the intents repository](https://github.com/home-assistant/intents). Please make sure to specify the default Anylist list in integration options. It is required in order to use intents. 
 
 
 However, the built-in intents are very limited in functionality. It currently only supports adding items to lists. For the ability to remove and query items, custom sentences need to be added. 
@@ -171,7 +173,7 @@ Slight sentence variations are supported in order to capture more commands. If y
 #### Automation
 Home Assistant 2023.8.0 introduced support for [wildcards in sentence triggers](https://www.home-assistant.io/blog/2023/08/02/release-20238/#wildcard-support-for-sentence-triggers) for automations. As a result, you can build your own Anylist automation by combining [sentence triggers](https://www.home-assistant.io/docs/automation/trigger/#sentence-trigger) and the service calls provided by this integration to match your own needs. 
 
-If you wish, you can also import these pre-built blueprints into your Home Assistant to get started quickly. 
+If you wish, you can also import these pre-built blueprints into your Home Assistant to get started quickly. Please make sure to specify the default Anylist list in integration options. It is required in order to use the below blueprints. 
 
 
 Adding an item:
@@ -197,4 +199,4 @@ By default, the integration will apply the "Other" category to added items. Howe
 
 
 ## Options
-The integration allows you to specify the name of the default Anylist list to use if none are specified in the service call. The default list name is also used for Home Assistant intents.
+The integration allows you to specify the name of the default Anylist list to use if none are specified in the service call. The default list name is also used for Home Assistant intents and blueprint automations.
