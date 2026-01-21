@@ -81,12 +81,12 @@ STEP_INIT_DATA_SCHEMA = vol.Schema(
         ),
         vol.Optional(
             CONF_REFRESH_INTERVAL,
-            default = 30,
+            default = 10,
         ): NumberSelector(
             NumberSelectorConfig(
-                min = 15,
+                min = 1,
                 max = 120,
-                step = 15,
+                step = 1,
                 unit_of_measurement = "minutes",
                 mode = NumberSelectorMode.SLIDER
             )
